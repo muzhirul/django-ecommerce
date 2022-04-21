@@ -15,54 +15,54 @@
     <div class="card">
         <div class="card-body">
             <h4 class="card-title mb-4">Billing Address</h4>
-            <form action="" method="POST">
+            <form action="{% url 'place_order' %}" method="POST">
                 {% csrf_token %}
                 <div class="form-row">
                     <div class="col form-group">
-                        <label for="first_name">First Name</label>
+                        <label for="">First Name</label>
                         <input type="text" name="first_name" class="form-control" required />
                     </div>
                     <div class="col form-group">
-                        <label for="last_name">Last Name</label>
+                        <label for="">Last Name</label>
                         <input type="text" name="last_name" class="form-control" required />
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="col form-group">
-                        <label for="email">Email Address</label>
+                        <label for="">Email Address</label>
                         <input type="email" name="email" class="form-control" required />
                     </div>
                     <div class="col form-group">
-                        <label for="phone">Phone Number</label>
+                        <label for="">Phone Number</label>
                         <input type="text" name="phone" class="form-control" required />
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="col form-group">
-                        <label for="address_line_1">Address Line 1</label>
+                        <label for="">Address Line 1</label>
                         <input type="text" name="address_line_1" class="form-control" required />
                     </div>
                     <div class="col form-group">
-                        <label for="address_line_2">Address Line 12</label>
+                        <label for="">Address Line 2</label>
                         <input type="text" name="address_line_2" class="form-control"  />
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="col form-group">
-                        <label for="city">City</label>
+                        <label for="">City</label>
                         <input type="text" name="city" class="form-control" required />
                     </div>
                     <div class="col form-group">
-                        <label for="state">State</label>
+                        <label for="">State</label>
                         <input type="text" name="state" class="form-control" required />
                     </div>
                     <div class="col form-group">
-                        <label for="country">Country</label>
+                        <label for="">Country</label>
                         <input type="text" name="country" class="form-control" required />
                     </div>
                 </div>
                 <div class="form-row">
-                    <label for="order_note">Order Note</label>
+                    <label for="">Order Note</label>
                     <textarea type="text" name="order_note" rows="2" class="form-control" ></textarea>
                 </div>
 
