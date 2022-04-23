@@ -34,6 +34,15 @@ def payments(request):
         
         # Move the cart items to order product table
         cart_items = CartItem.objects.filter(user=request.user)
+        total = 0
+        grand_total = 0
+        quantity = 0
+        tax = 0
+        for cart_item in cart_items:
+            total += (cart_item.product.price * cart_item.quantity)
+            quantity += cart_item.quantity
+            tax = (2 * total)/100
+            grand_total = total + tax
         
         for item in cart_items:
             orderproduct = OrderProduct()
@@ -68,6 +77,15 @@ def payments(request):
         to_email = request.user.email
         send_email = EmailMessage(mail_subject, message, to=[to_email])
         send_email.send()
+        context = {
+            'user': request.user,
+            'order':order,
+            'cart_items': cart_items,
+            'grand_total': grand_total,
+            'tax': tax,
+            'total' : total
+        }
+        return render(request,'orders/order_complete.html', context)
         # Send order number to transaction
         
     return render(request, 'orders/payments.html')
@@ -132,3 +150,5 @@ def place_order(request, total = 0, quantity = 0):
     else:
         return redirect('checkout')
     
+def order_complete(request):
+    return render(request, 'orders/order_complete.html')
