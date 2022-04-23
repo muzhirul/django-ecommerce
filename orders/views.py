@@ -1,3 +1,4 @@
+from ast import Or
 import datetime
 from urllib import response
 from django.http import HttpResponse
@@ -5,10 +6,70 @@ from django.shortcuts import redirect, render
 from requests import request
 from carts.models import Cart, CartItem
 from orders.forms import OrderForm
-from .models import Order
+from store.models import Product
+from .models import Order, OrderProduct, Payment
+from django.template.loader import render_to_string
+from django.core.mail import EmailMessage
 
 # Create your views here.
 def payments(request):
+    if request.method == 'POST':
+        order_number = request.POST['order_number']
+        total = request.POST['total']
+        order = Order.objects.get(user=request.user, is_ordered=False, order_number=order_number)
+        
+        # Store transaction details inside payment model
+        payment = Payment(
+            user = request.user,
+            payment_id = order_number,
+            payment_method = 'COD',
+            amount_paid = order.order_total,
+            status = 'COMPLETED',
+        )
+        payment.save()
+        
+        order.payment = payment
+        order.is_ordered = True
+        order.save()
+        
+        # Move the cart items to order product table
+        cart_items = CartItem.objects.filter(user=request.user)
+        
+        for item in cart_items:
+            orderproduct = OrderProduct()
+            orderproduct.order_id = order.id
+            orderproduct.payment = payment
+            orderproduct.user_id = request.user.id
+            orderproduct.product_id = item.product_id
+            orderproduct.quantity = item.quantity
+            orderproduct.product_price = item.product.price
+            orderproduct.ordered = True
+            orderproduct.save()
+            
+            cart_item = CartItem.objects.get(id=item.id)
+            product_variation = cart_item.variations.all()
+            orderproduct = OrderProduct.objects.get(id=orderproduct.id)
+            orderproduct.variations.set(product_variation)
+            orderproduct.save()
+            
+            # Replace the quantity of the sold products
+            product = Product.objects.get(id=item.product_id)
+            product.stock -= item.quantity
+            product.save()
+        
+        # clear Cart
+        CartItem.objects.filter(user=request.user).delete()
+        # send order received email to customer
+        mail_subject = 'Thank you for order!'
+        message = render_to_string('orders/order_received_email.html', {
+            'user': request.user,
+            'order':order
+        }) 
+        to_email = request.user.email
+        send_email = EmailMessage(mail_subject, message, to=[to_email])
+        send_email.send()
+        # Send order number to transaction
+        
     return render(request, 'orders/payments.html')
 
 
@@ -57,7 +118,15 @@ def place_order(request, total = 0, quantity = 0):
             order_number = current_date + str(data.id)
             data.order_number = order_number
             data.save()
-            return redirect('checkout')
+            order = Order.objects.get(user=current_user, is_ordered=False,order_number= order_number)
+            context = {
+                'order' : order,
+                'cart_items' : cart_items,
+                'total' : total,
+                'tax' : tax,
+                'grand_total' : grand_total,
+            }
+            return render(request,'orders/payments.html',context)
         else:
             return HttpResponse('Problem ')
     else:
