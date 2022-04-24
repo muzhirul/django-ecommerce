@@ -263,3 +263,17 @@ def changePassword(request):
         else:
             messages.error(request, 'Please enter valid Confirm Password')
     return render(request, 'accounts/changePassword.html')
+
+@login_required(login_url = 'login')
+def order_details(request, order_id):
+    order_details = OrderProduct.objects.filter(order__order_number=order_id)
+    order = Order.objects.get(order_number=order_id)
+    subtotal = 0
+    for i in order_details:
+        subtotal += i.product_price * i.quantity
+    context = {
+        'order_details': order_details,
+        'order' : order,
+        'subtotal': subtotal,
+    }
+    return render(request, 'accounts/order_details.html', context)

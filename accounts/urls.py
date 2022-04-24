@@ -20,4 +20,6 @@ urlpatterns = [
     
     path('changePassword/', views.changePassword, name='changePassword'), 
     
+    path('order_details/<int:order_id>', views.order_details, name='order_details'), 
+    
 ]
