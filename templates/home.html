@@ -35,6 +35,15 @@
 			<figcaption class="info-wrap">
 				<a href="{{ product.get_url }}" class="title">{{ product.product_name }}</a>
 				<div class="price mt-1">$ {{ product.price }}</div> <!-- price-wrap.// -->
+				<div class="rating-star">
+					<span>
+						<i class="fa fa-star{% if product.avarageReview < 0.5 %}-o{% elif product.avarageReview >= 0.5 and product.avarageReview < 1 %}-half-o {% endif %}" aria-hidded="true"></i>
+						<i class="fa fa-star{% if product.avarageReview < 1.5 %}-o{% elif product.avarageReview >= 1.5 and product.avarageReview < 2 %}-half-o {% endif %}" aria-hidded="true"></i>
+						<i class="fa fa-star{% if product.avarageReview < 2.5 %}-o{% elif product.avarageReview >= 2.5 and product.avarageReview < 3 %}-half-o {% endif %}" aria-hidded="true"></i>
+						<i class="fa fa-star{% if product.avarageReview < 3.5 %}-o{% elif product.avarageReview >= 3.5 and product.avarageReview < 4 %}-half-o {% endif %}" aria-hidded="true"></i>
+						<i class="fa fa-star{% if product.avarageReview < 4.5 %}-o{% elif product.avarageReview >= 4.5 and product.avarageReview < 5 %}-half-o {% endif %}" aria-hidded="true"></i>
+					</span>
+				</div>
 			</figcaption>
 		</div>
 	</div> <!-- col.// -->
@@ -52,7 +61,6 @@
 
 <!-- ========================= FOOTER END // ========================= -->
 
-</body>
-</html>
+
 
 {% endblock %}

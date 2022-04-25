@@ -1,6 +1,7 @@
 import imp
 from itertools import count, product
 from statistics import mode
+from tabnanny import verbose
 from unicodedata import category
 from django.db import models
 from django.urls import reverse
@@ -85,3 +86,14 @@ class ReviewRating(models.Model):
     
     def __str__(self):
         return self.product.product_name
+    
+class ProductGallery(models.Model):
+    product = models.ForeignKey(Product, default=None, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='store/products', blank=True)
+    
+    def __str__(self):
+        return self.product.product_name
+    
+    class Meta:
+        verbose_name = 'product gallery'
+        verbose_name_plural = 'product gallery'

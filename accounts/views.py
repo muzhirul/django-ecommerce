@@ -145,9 +145,11 @@ def activate(request, uidb64, token):
 def dashboard(request):
     orders = Order.objects.filter(user_id=request.user.id, is_ordered=True).order_by('-created_at')
     orders_count = orders.count()
+    userprofile = UserProfile.objects.get(user_id=request.user.id)
     context = {
         'orders_count' : orders_count,
         'orders' : orders,
+        'userprofile':userprofile,
     }
     return render(request, 'accounts/dashboard.html', context)
 
